@@ -3,15 +3,14 @@ import { Container, Card, Button } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
 function getWindDirection(degree) {
-    if (degree > 337.5) return 'N';
-    if (degree > 292.5) return 'NW';
-    if (degree > 247.5) return 'W';
-    if (degree > 202.5) return 'SW';
-    if (degree > 157.5) return 'S';
-    if (degree > 122.5) return 'SE';
-    if (degree > 67.5) return 'E';
-    if (degree > 22.5) return 'NE';
-    return 'N';
+    if (degree > 337.5 || degree <= 22.5) return 'North';
+    if (degree > 22.5 && degree <= 67.5) return 'Northeast';
+    if (degree > 67.5 && degree <= 112.5) return 'East';
+    if (degree > 112.5 && degree <= 157.5) return 'Southeast';
+    if (degree > 157.5 && degree <= 202.5) return 'South';
+    if (degree > 202.5 && degree <= 247.5) return 'Southwest';
+    if (degree > 247.5 && degree <= 292.5) return 'West';
+    if (degree > 292.5 && degree <= 337.5) return 'Northwest';
 }
 
 const Weather = () => {

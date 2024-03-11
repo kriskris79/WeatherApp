@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Button } from 'react-bootstrap';
+import windArrow from '../assets/wind_arrow.svg';
 
 function getWindDirection(degree) {
     if (degree > 337.5) return 'N';
@@ -45,8 +46,13 @@ const Weather = () => {
                     <Card.Text>
                         Wind Speed: {weather.wind.speed} m/s
                     </Card.Text>
-                    <Card.Text>
+                    <Card.Text className="wind-direction">
                         Wind Direction: {getWindDirection(weather.wind.deg)}
+                        <img
+                            src={windArrow}
+                            alt="Wind Direction"
+                            className="wind-arrow"
+                        />
                     </Card.Text>
                     <Button variant="primary">Refresh</Button>
                 </Card.Body>

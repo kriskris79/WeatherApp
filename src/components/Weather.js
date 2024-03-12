@@ -16,30 +16,45 @@ function getWindDirection(degree) {
 const Weather = () => {
     const [weather, setWeather] = useState(null);
     const [location, setLocation] = useState('');
+    const [airPollution, setAirPollution] = useState(null);
 
-    const fetchWeatherData = (query) => {
+    const fetchWeatherData = async (query) => {
         const apiKey = process.env.REACT_APP_WEATHER_API_KEY;
         const url = `https://api.openweathermap.org/data/2.5/weather?q=${query}&units=metric&appid=${apiKey}`;
 
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`API call failed with status: ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.cod === 200) {
-                    setWeather(data);
-                } else {
-                    console.error('Weather data fetch error:', data.message);
-                    setWeather(null);
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching data: ", error.message);
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data.cod === 200) {
+                setWeather(data);
+                fetchAirPollutionData(data.coord.lat, data.coord.lon);
+            } else {
+                console.error('Weather data fetch error:', data.message);
                 setWeather(null);
-            });
+            }
+        } catch (error) {
+            console.error("Error fetching data: ", error.message);
+            setWeather(null);
+        }
+    };
+
+    const fetchAirPollutionData = async (lat, lon) => {
+        const apiKey = process.env.REACT_APP_AIR_POLLUTION_API_KEY;
+        const url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (response.ok) {
+                setAirPollution(data);
+            } else {
+                console.error('Air Pollution data fetch error:', data.message);
+                setAirPollution(null);
+            }
+        } catch (error) {
+            console.error('Error fetching air pollution data:', error);
+            setAirPollution(null);
+        }
     };
 
     const handleSearch = (e) => {
@@ -96,8 +111,20 @@ const Weather = () => {
                         <Card.Text>Sunrise: {sunriseTime}</Card.Text>
                         <Card.Text>Sunset: {sunsetTime}</Card.Text>
                         <Card.Text>Local Time: {localTime}</Card.Text>
+                        {airPollution && (
+                            <Card className="text-center mt-3">
+                                <Card.Header as="h5">Air Quality Index (AQI)</Card.Header>
+                                <Card.Body>
+                                    <Card.Title>AQI: {airPollution.list[0].main.aqi}</Card.Title>
+                                    <Card.Text>CO: {airPollution.list[0].components.co.toFixed(2)} μg/m³</Card.Text>
+                                    {/* Include more pollutants as desired */}
+                                </Card.Body>
+                            </Card>
+                        )}
                     </Card.Body>
                 </Card>
+
+
             )}
         </Container>
     );

@@ -116,8 +116,14 @@ const Weather = () => {
                                 <Card.Header as="h5">Air Quality Index (AQI)</Card.Header>
                                 <Card.Body>
                                     <Card.Title>AQI: {airPollution.list[0].main.aqi}</Card.Title>
-                                    <Card.Text>CO: {airPollution.list[0].components.co.toFixed(2)} μg/m³</Card.Text>
-                                    {/* Include more pollutants as desired */}
+                                    <Card.Text>CO (Carbon monoxide): {airPollution.list[0].components.co.toFixed(2)} μg/m³</Card.Text>
+                                    <Card.Text>NO (Nitrogen monoxide): {airPollution.list[0].components.no.toFixed(2)} μg/m³</Card.Text>
+                                    <Card.Text>NO2 (Nitrogen dioxide): {airPollution.list[0].components.no2.toFixed(2)} μg/m³</Card.Text>
+                                    <Card.Text>O3 (Ozone): {airPollution.list[0].components.o3.toFixed(2)} μg/m³</Card.Text>
+                                    <Card.Text>SO2 (Sulphur dioxide): {airPollution.list[0].components.so2.toFixed(2)} μg/m³</Card.Text>
+                                    <Card.Text>PM2.5 (Fine particles matter): {airPollution.list[0].components.pm2_5.toFixed(2)} μg/m³</Card.Text>
+                                    <Card.Text>PM10 (Coarse particulate matter): {airPollution.list[0].components.pm10.toFixed(2)} μg/m³</Card.Text>
+                                    <Card.Text>NH3 (Ammonia): {airPollution.list[0].components.nh3.toFixed(2)} μg/m³</Card.Text>
                                 </Card.Body>
                             </Card>
                         )}

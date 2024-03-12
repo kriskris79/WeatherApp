@@ -75,12 +75,12 @@ const Weather = () => {
             </form>
             {weather && (
                 <Card className="text-center">
-                    <Card.Header as="h5">Weather in {weather.name}</Card.Header>
+                    <Card.Header as="h5">Weather in {weather.name}, {weather.sys.country}</Card.Header>
                     <Card.Body>
                         <Card.Title>{weather.main.temp} °C</Card.Title>
                         {weatherIconUrl && (
                             <div className="weather-icon-container">
-                                <img src={weatherIconUrl} alt="Weather Icon" style={{ width: '50px', height: '50px' }} />
+                                <img src={weatherIconUrl} alt="Weather Icon"  />
                                 <Card.Text className="weather-description">{weather.weather[0].description}</Card.Text>
                             </div>
                         )}

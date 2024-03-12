@@ -38,6 +38,9 @@ const Weather = () => {
     const weatherIconCode = weather && weather.weather[0].icon;
     const weatherIconUrl = `http://openweathermap.org/img/wn/${weatherIconCode}.png`;
 
+    const sunriseTime = new Date(weather.sys.sunrise * 1000).toLocaleTimeString();
+    const sunsetTime = new Date(weather.sys.sunset * 1000).toLocaleTimeString();
+
     return (
         <Container className="my-4">
             <Card className="text-center">
@@ -61,6 +64,10 @@ const Weather = () => {
                             className="wind-arrow"
                         />
                     </Card.Text>
+                    <Card.Text>Pressure: {weather.main.pressure} hPa</Card.Text>
+                    <Card.Text>Humidity: {weather.main.humidity}%</Card.Text>
+                    <Card.Text>Sunrise: {sunriseTime}</Card.Text>
+                    <Card.Text>Sunset: {sunsetTime}</Card.Text>
                     <Button variant="primary">Refresh</Button>
                 </Card.Body>
             </Card>

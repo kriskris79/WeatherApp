@@ -47,12 +47,21 @@ const Weather = () => {
         fetchWeatherData(location.trim());
     };
 
+    //convert UTC time to local time
+    const convertToLocalTime = (utcSeconds, timezoneOffset) => {
+        const utcDate = new Date(utcSeconds * 1000);
+        const localDate = new Date(utcDate.getTime() + timezoneOffset * 1000);
+        return localDate.toLocaleTimeString();
+    };
+
+
     const weatherIconCode = weather && weather.weather[0] && weather.weather[0].icon;
     const weatherIconUrl = weatherIconCode ? `http://openweathermap.org/img/wn/${weatherIconCode}.png` : '';
 
-    const sunriseTime = weather && new Date(weather.sys.sunrise * 1000).toLocaleTimeString();
-    const sunsetTime = weather && new Date(weather.sys.sunset * 1000).toLocaleTimeString();
-
+    //timezone offset to adjust times
+    const sunriseTime = weather ? convertToLocalTime(weather.sys.sunrise, weather.timezone) : '';
+    const sunsetTime = weather ? convertToLocalTime(weather.sys.sunset, weather.timezone) : '';
+    const localTime = weather ? new Date(Date.now() + weather.timezone * 1000).toLocaleTimeString() : '';
     return (
         <Container className="my-4">
             <form onSubmit={handleSearch}>
@@ -84,6 +93,7 @@ const Weather = () => {
                         <Card.Text>Humidity: {weather.main.humidity}%</Card.Text>
                         <Card.Text>Sunrise: {sunriseTime}</Card.Text>
                         <Card.Text>Sunset: {sunsetTime}</Card.Text>
+                        <Card.Text>Local Time: {localTime}</Card.Text>
                     </Card.Body>
                 </Card>
             )}

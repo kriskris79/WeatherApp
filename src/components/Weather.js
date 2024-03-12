@@ -35,6 +35,8 @@ const Weather = () => {
 
     if (!weather) return <Container>Loading...</Container>;
 
+    const weatherIconCode = weather && weather.weather[0].icon;
+    const weatherIconUrl = `http://openweathermap.org/img/wn/${weatherIconCode}.png`;
 
     return (
         <Container className="my-4">
@@ -42,6 +44,12 @@ const Weather = () => {
                 <Card.Header as="h5">Weather in Folkestone</Card.Header>
                 <Card.Body>
                     <Card.Title>{weather.main.temp} °C</Card.Title>
+                    {weatherIconCode && (
+                        <div className="weather-icon-container">
+                            <img src={weatherIconUrl} alt="Weather Icon" />
+                            <Card.Text className="weather-description">{weather.weather[0].description}</Card.Text>
+                        </div>
+                    )}
                     <Card.Text>
                         Wind Speed: {weather.wind.speed} m/s
                     </Card.Text>

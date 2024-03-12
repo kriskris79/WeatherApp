@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Container, Card, Button } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
@@ -15,25 +15,31 @@ function getWindDirection(degree) {
 
 const Weather = () => {
     const [weather, setWeather] = useState(null);
+    const [location, setLocation] = useState('');
 
-    useEffect(() => {
+    const fetchWeatherData = (query) => {
         const apiKey = process.env.REACT_APP_WEATHER_API_KEY;
-        const url = `https://api.openweathermap.org/data/2.5/weather?q=Folkestone,uk&units=metric&appid=${apiKey}`;
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${query},uk&units=metric&appid=${apiKey}`;
 
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                if (data.main && data.wind) {
+                if (data.cod === "200") {
                     setWeather(data);
                 } else {
-                    console.error('Invalid data structure:', data);
+                    console.error('Weather data fetch error:', data.message);
                     setWeather(null);
                 }
             })
             .catch(error => console.error("Error fetching data: ", error));
-    }, []);
+    };
 
     if (!weather) return <Container>Loading...</Container>;
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        fetchWeatherData(location.trim());
+    };
 
     const weatherIconCode = weather && weather.weather[0].icon;
     const weatherIconUrl = `http://openweathermap.org/img/wn/${weatherIconCode}.png`;
@@ -43,9 +49,19 @@ const Weather = () => {
 
     return (
         <Container className="my-4">
-            <Card className="text-center">
-                <Card.Header as="h5">Weather in Folkestone</Card.Header>
-                <Card.Body>
+            <form onSubmit={handleSearch}>
+                <input
+                    type="text"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="Enter city name or postcode"
+                />
+                <Button type="submit" variant="primary">Get Weather</Button>
+            </form>
+            {weather && (
+                <Card className="text-center">
+                    <Card.Header as="h5">Weather in {weather.name}</Card.Header>
+                    <Card.Body>
                     <Card.Title>{weather.main.temp} °C</Card.Title>
                     {weatherIconCode && (
                         <div className="weather-icon-container">
@@ -71,6 +87,7 @@ const Weather = () => {
                     <Button variant="primary">Refresh</Button>
                 </Card.Body>
             </Card>
+                )}
         </Container>
     );
 };

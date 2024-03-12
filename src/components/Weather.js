@@ -47,12 +47,23 @@ const Weather = () => {
         fetchWeatherData(location.trim());
     };
 
+    const windSpeedInKmh = weather ? (weather.wind.speed * 3.6).toFixed(2) : 0;
+
+    //convert UTC time to local time
+    const convertToLocalTime = (utcSeconds, timezoneOffset) => {
+        const utcDate = new Date(utcSeconds * 1000);
+        const localDate = new Date(utcDate.getTime() + timezoneOffset * 1000);
+        return localDate.toLocaleTimeString();
+    };
+
+
     const weatherIconCode = weather && weather.weather[0] && weather.weather[0].icon;
     const weatherIconUrl = weatherIconCode ? `http://openweathermap.org/img/wn/${weatherIconCode}.png` : '';
 
-    const sunriseTime = weather && new Date(weather.sys.sunrise * 1000).toLocaleTimeString();
-    const sunsetTime = weather && new Date(weather.sys.sunset * 1000).toLocaleTimeString();
-
+    //timezone offset to adjust times
+    const sunriseTime = weather ? convertToLocalTime(weather.sys.sunrise, weather.timezone) : '';
+    const sunsetTime = weather ? convertToLocalTime(weather.sys.sunset, weather.timezone) : '';
+    const localTime = weather ? new Date(Date.now() + weather.timezone * 1000).toLocaleTimeString() : '';
     return (
         <Container className="my-4">
             <form onSubmit={handleSearch}>
@@ -66,16 +77,16 @@ const Weather = () => {
             </form>
             {weather && (
                 <Card className="text-center">
-                    <Card.Header as="h5">Weather in {weather.name}</Card.Header>
+                    <Card.Header as="h5">Weather in {weather.name}, {weather.sys.country}</Card.Header>
                     <Card.Body>
                         <Card.Title>{weather.main.temp} °C</Card.Title>
                         {weatherIconUrl && (
                             <div className="weather-icon-container">
-                                <img src={weatherIconUrl} alt="Weather Icon" style={{ width: '50px', height: '50px' }} />
+                                <img src={weatherIconUrl} alt="Weather Icon"  />
                                 <Card.Text className="weather-description">{weather.weather[0].description}</Card.Text>
                             </div>
                         )}
-                        <Card.Text>Wind Speed: {weather.wind.speed} m/s</Card.Text>
+                        <Card.Text>Wind Speed: {windSpeedInKmh} km/h</Card.Text>
                         <Card.Text className="wind-direction">
                             Wind Direction: {getWindDirection(weather.wind.deg)}
                             <img src={windArrow} alt="Wind Direction" className="wind-arrow" style={{ marginLeft: '5px' }} />
@@ -84,6 +95,7 @@ const Weather = () => {
                         <Card.Text>Humidity: {weather.main.humidity}%</Card.Text>
                         <Card.Text>Sunrise: {sunriseTime}</Card.Text>
                         <Card.Text>Sunset: {sunsetTime}</Card.Text>
+                        <Card.Text>Local Time: {localTime}</Card.Text>
                     </Card.Body>
                 </Card>
             )}

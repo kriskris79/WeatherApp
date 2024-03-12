@@ -47,6 +47,8 @@ const Weather = () => {
         fetchWeatherData(location.trim());
     };
 
+    const windSpeedInKmh = weather ? (weather.wind.speed * 3.6).toFixed(2) : 0;
+
     //convert UTC time to local time
     const convertToLocalTime = (utcSeconds, timezoneOffset) => {
         const utcDate = new Date(utcSeconds * 1000);
@@ -84,7 +86,7 @@ const Weather = () => {
                                 <Card.Text className="weather-description">{weather.weather[0].description}</Card.Text>
                             </div>
                         )}
-                        <Card.Text>Wind Speed: {weather.wind.speed} m/s</Card.Text>
+                        <Card.Text>Wind Speed: {windSpeedInKmh} km/h</Card.Text>
                         <Card.Text className="wind-direction">
                             Wind Direction: {getWindDirection(weather.wind.deg)}
                             <img src={windArrow} alt="Wind Direction" className="wind-arrow" style={{ marginLeft: '5px' }} />

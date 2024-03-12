@@ -22,16 +22,24 @@ const Weather = () => {
         const url = `https://api.openweathermap.org/data/2.5/weather?q=${query}&units=metric&appid=${apiKey}`;
 
         fetch(url)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`API call failed with status: ${response.statusText}`);
+                }
+                return response.json();
+            })
             .then(data => {
-                if (data.cod === "200") {
+                if (data.cod === 200) {
                     setWeather(data);
                 } else {
                     console.error('Weather data fetch error:', data.message);
                     setWeather(null);
                 }
             })
-            .catch(error => console.error("Error fetching data: ", error));
+            .catch(error => {
+                console.error("Error fetching data: ", error.message);
+                setWeather(null);
+            });
     };
 
     const handleSearch = (e) => {

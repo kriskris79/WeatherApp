@@ -3,15 +3,14 @@ import { Container, Card, Button } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
 function getWindDirection(degree) {
-    if (degree > 337.5) return 'N';
-    if (degree > 292.5) return 'NW';
-    if (degree > 247.5) return 'W';
-    if (degree > 202.5) return 'SW';
-    if (degree > 157.5) return 'S';
-    if (degree > 122.5) return 'SE';
-    if (degree > 67.5) return 'E';
-    if (degree > 22.5) return 'NE';
-    return 'N';
+    if (degree > 337.5 || degree <= 22.5) return 'North';
+    if (degree > 22.5 && degree <= 67.5) return 'Northeast';
+    if (degree > 67.5 && degree <= 112.5) return 'East';
+    if (degree > 112.5 && degree <= 157.5) return 'Southeast';
+    if (degree > 157.5 && degree <= 202.5) return 'South';
+    if (degree > 202.5 && degree <= 247.5) return 'Southwest';
+    if (degree > 247.5 && degree <= 292.5) return 'West';
+    if (degree > 292.5 && degree <= 337.5) return 'Northwest';
 }
 
 const Weather = () => {
@@ -36,6 +35,11 @@ const Weather = () => {
 
     if (!weather) return <Container>Loading...</Container>;
 
+    const weatherIconCode = weather && weather.weather[0].icon;
+    const weatherIconUrl = `http://openweathermap.org/img/wn/${weatherIconCode}.png`;
+
+    const sunriseTime = new Date(weather.sys.sunrise * 1000).toLocaleTimeString();
+    const sunsetTime = new Date(weather.sys.sunset * 1000).toLocaleTimeString();
 
     return (
         <Container className="my-4">
@@ -43,6 +47,12 @@ const Weather = () => {
                 <Card.Header as="h5">Weather in Folkestone</Card.Header>
                 <Card.Body>
                     <Card.Title>{weather.main.temp} °C</Card.Title>
+                    {weatherIconCode && (
+                        <div className="weather-icon-container">
+                            <img src={weatherIconUrl} alt="Weather Icon" />
+                            <Card.Text className="weather-description">{weather.weather[0].description}</Card.Text>
+                        </div>
+                    )}
                     <Card.Text>
                         Wind Speed: {weather.wind.speed} m/s
                     </Card.Text>
@@ -54,6 +64,10 @@ const Weather = () => {
                             className="wind-arrow"
                         />
                     </Card.Text>
+                    <Card.Text>Pressure: {weather.main.pressure} hPa</Card.Text>
+                    <Card.Text>Humidity: {weather.main.humidity}%</Card.Text>
+                    <Card.Text>Sunrise: {sunriseTime}</Card.Text>
+                    <Card.Text>Sunset: {sunsetTime}</Card.Text>
                     <Button variant="primary">Refresh</Button>
                 </Card.Body>
             </Card>

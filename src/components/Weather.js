@@ -19,7 +19,7 @@ const Weather = () => {
 
     const fetchWeatherData = (query) => {
         const apiKey = process.env.REACT_APP_WEATHER_API_KEY;
-        const url = `https://api.openweathermap.org/data/2.5/weather?q=${query},uk&units=metric&appid=${apiKey}`;
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${query}&units=metric&appid=${apiKey}`;
 
         fetch(url)
             .then(response => response.json())
@@ -34,18 +34,16 @@ const Weather = () => {
             .catch(error => console.error("Error fetching data: ", error));
     };
 
-    if (!weather) return <Container>Loading...</Container>;
-
     const handleSearch = (e) => {
         e.preventDefault();
         fetchWeatherData(location.trim());
     };
 
-    const weatherIconCode = weather && weather.weather[0].icon;
-    const weatherIconUrl = `http://openweathermap.org/img/wn/${weatherIconCode}.png`;
+    const weatherIconCode = weather && weather.weather[0] && weather.weather[0].icon;
+    const weatherIconUrl = weatherIconCode ? `http://openweathermap.org/img/wn/${weatherIconCode}.png` : '';
 
-    const sunriseTime = new Date(weather.sys.sunrise * 1000).toLocaleTimeString();
-    const sunsetTime = new Date(weather.sys.sunset * 1000).toLocaleTimeString();
+    const sunriseTime = weather && new Date(weather.sys.sunrise * 1000).toLocaleTimeString();
+    const sunsetTime = weather && new Date(weather.sys.sunset * 1000).toLocaleTimeString();
 
     return (
         <Container className="my-4">
@@ -62,32 +60,25 @@ const Weather = () => {
                 <Card className="text-center">
                     <Card.Header as="h5">Weather in {weather.name}</Card.Header>
                     <Card.Body>
-                    <Card.Title>{weather.main.temp} °C</Card.Title>
-                    {weatherIconCode && (
-                        <div className="weather-icon-container">
-                            <img src={weatherIconUrl} alt="Weather Icon" />
-                            <Card.Text className="weather-description">{weather.weather[0].description}</Card.Text>
-                        </div>
-                    )}
-                    <Card.Text>
-                        Wind Speed: {weather.wind.speed} m/s
-                    </Card.Text>
-                    <Card.Text className="wind-direction">
-                        Wind Direction: {getWindDirection(weather.wind.deg)}
-                        <img
-                            src={windArrow}
-                            alt="Wind Direction"
-                            className="wind-arrow"
-                        />
-                    </Card.Text>
-                    <Card.Text>Pressure: {weather.main.pressure} hPa</Card.Text>
-                    <Card.Text>Humidity: {weather.main.humidity}%</Card.Text>
-                    <Card.Text>Sunrise: {sunriseTime}</Card.Text>
-                    <Card.Text>Sunset: {sunsetTime}</Card.Text>
-                    <Button variant="primary">Refresh</Button>
-                </Card.Body>
-            </Card>
-                )}
+                        <Card.Title>{weather.main.temp} °C</Card.Title>
+                        {weatherIconUrl && (
+                            <div className="weather-icon-container">
+                                <img src={weatherIconUrl} alt="Weather Icon" style={{ width: '50px', height: '50px' }} />
+                                <Card.Text className="weather-description">{weather.weather[0].description}</Card.Text>
+                            </div>
+                        )}
+                        <Card.Text>Wind Speed: {weather.wind.speed} m/s</Card.Text>
+                        <Card.Text className="wind-direction">
+                            Wind Direction: {getWindDirection(weather.wind.deg)}
+                            <img src={windArrow} alt="Wind Direction" className="wind-arrow" style={{ marginLeft: '5px' }} />
+                        </Card.Text>
+                        <Card.Text>Pressure: {weather.main.pressure} hPa</Card.Text>
+                        <Card.Text>Humidity: {weather.main.humidity}%</Card.Text>
+                        <Card.Text>Sunrise: {sunriseTime}</Card.Text>
+                        <Card.Text>Sunset: {sunsetTime}</Card.Text>
+                    </Card.Body>
+                </Card>
+            )}
         </Container>
     );
 };

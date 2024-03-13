@@ -175,8 +175,9 @@ const Weather = () => {
                         <span>{forecastItem.weather[0].description}</span>
                     </div>
                     <div><strong>Wind Speed:</strong> {(forecastItem.wind.speed * 3.6).toFixed(2)} km/h</div>
-                    <div><strong>Wind Direction:</strong> {getWindDirection(forecastItem.wind.deg)}
-                        <img src={windArrow} alt="Wind Direction" style={{ transform: `rotate(${forecastItem.wind.deg}deg)`, height: '20px' }}/>
+                    <div className="wind-direction">
+                        <strong>Wind Direction:</strong> {getWindDirection(forecastItem.wind.deg)}
+                        <img src={windArrow} alt="Wind Direction" className="wind-arrow" style={{ transform: `rotate(${forecastItem.wind.deg}deg)` }}/>
                     </div>
                     <div><strong>Pressure:</strong> {forecastItem.main.pressure} hPa</div>
                     <div><strong>Humidity:</strong> {forecastItem.main.humidity}%</div>

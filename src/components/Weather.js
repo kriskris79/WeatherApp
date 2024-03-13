@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback  } from 'react';
 import { Container, Card, Button } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
@@ -89,13 +89,9 @@ const Weather = () => {
     const [airPollution, setAirPollution] = useState(null);
     const [selectedForecastDay, setSelectedForecastDay] = useState(0);
 
-    useEffect(() => {
-        if (location) {
-            fetchWeatherData(location);
-        }
-    }, [location, selectedForecastDay]);
 
-    const fetchWeatherData = async (query) => {
+
+    const fetchWeatherData = useCallback(async (query) => {
         const apiKey = process.env.REACT_APP_WEATHER_API_KEY;
         const url = `https://api.openweathermap.org/data/2.5/weather?q=${query}&units=metric&appid=${apiKey}`;
 
@@ -114,7 +110,14 @@ const Weather = () => {
             console.error("Error fetching data: ", error.message);
             setWeather(null);
         }
-    };
+    }, []);
+
+
+    useEffect(() => {
+        if (location) {
+            fetchWeatherData(location);
+        }
+    }, [location, selectedForecastDay, fetchWeatherData]);
 
     const fetchForecastData = async (lat, lon) => {
         const apiKey = process.env.REACT_APP_WEATHER_FORECAST_API_KEY;
@@ -149,8 +152,8 @@ const Weather = () => {
     };
 
     const handleSearch = (e) => {
-        e.preventDefault();
-        fetchWeatherData(location.trim());
+        e.preventDefault(); // Prevent default form submission behavior
+        fetchWeatherData(location.trim()); // Fetch weather data for the entered location
     };
 
     const windSpeedInKmh = weather ? (weather.wind.speed * 3.6).toFixed(2) : 0;
@@ -180,19 +183,29 @@ const Weather = () => {
     const localTime = weather ? new Date(Date.now() + weather.timezone * 1000).toLocaleTimeString() : '';
 
 
+    const renderForecast = () => {
+        const today = new Date();
+        const forecastStartDate = new Date(today);
+        forecastStartDate.setDate(forecastStartDate.getDate() + selectedForecastDay);
+        const formattedForecastStartDate = forecastStartDate.toISOString().slice(0, 10);
 
-    const renderNextDayForecast = () => {
-        const dayForecasts = forecast.slice(selectedForecastDay * 8, (selectedForecastDay + 1) * 8);
-        if (dayForecasts.length === 0) return <div>No forecast data available.</div>;
+        const filteredForecasts = forecast.filter(forecastItem =>
+            forecastItem.dt_txt.startsWith(formattedForecastStartDate)
+        );
 
-        return dayForecasts.map((forecastItem, index) => (
+        if (filteredForecasts.length === 0) {
+            return <div>No forecast data available for this day.</div>;
+        }
 
+        return filteredForecasts.map((forecastItem, index) => (
             <Card key={index} className="mt-2">
-                <Card.Header>{new Date(forecastItem.dt_txt).toLocaleTimeString()}</Card.Header>
+                <Card.Header>
+                    {new Date(forecastItem.dt_txt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </Card.Header>
                 <Card.Body>
                     <div><strong>Temperature:</strong> {forecastItem.main.temp} °C</div>
                     <div className="weather-icon-container">
-                        <img src={`http://openweathermap.org/img/wn/${forecastItem.weather[0].icon}.png`} alt="Weather Icon" />
+                        <img src={`http://openweathermap.org/img/wn/${forecastItem.weather[0].icon}.png`} alt={forecastItem.weather[0].description} />
                         <span>{forecastItem.weather[0].description}</span>
                     </div>
                     <div><strong>Wind Speed:</strong> {(forecastItem.wind.speed * 3.6).toFixed(2)} km/h</div>
@@ -204,6 +217,43 @@ const Weather = () => {
                     <div><strong>Humidity:</strong> {forecastItem.main.humidity}%</div>
                 </Card.Body>
             </Card>
+        ));
+    };
+
+        const renderNextDayForecast = () => {
+            const today = new Date();
+            const formattedToday = today.toISOString().slice(0, 10);
+
+            const forecastStartDate = selectedForecastDay === 0 ? formattedToday :
+                new Date(today.setDate(today.getDate() + selectedForecastDay)).toISOString().slice(0, 10);
+
+
+            const dayForecasts = forecast.filter(forecastItem =>
+                forecastItem.dt_txt.startsWith(forecastStartDate)
+            );
+
+            if (dayForecasts.length === 0) {
+                return <div>No forecast data available.</div>;
+            }
+
+            return dayForecasts.map((forecastItem, index) => (
+                <Card key={index} className="mt-2">
+                    <Card.Header>{new Date(forecastItem.dt_txt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Card.Header>
+                    <Card.Body>
+                        <div><strong>Temperature:</strong> {forecastItem.main.temp} °C</div>
+                        <div className="weather-icon-container">
+                            <img src={`http://openweathermap.org/img/wn/${forecastItem.weather[0].icon}.png`} alt={forecastItem.weather[0].description} />
+                            <span>{forecastItem.weather[0].description}</span>
+                        </div>
+                        <div><strong>Wind Speed:</strong> {(forecastItem.wind.speed * 3.6).toFixed(2)} km/h</div>
+                        <div className="wind-direction">
+                            <strong>Wind Direction:</strong> {getWindDirection(forecastItem.wind.deg)}
+                            <img src={windArrow} alt="Wind Direction" className="wind-arrow" style={{ transform: `rotate(${forecastItem.wind.deg}deg)` }}/>
+                        </div>
+                        <div><strong>Pressure:</strong> {forecastItem.main.pressure} hPa</div>
+                        <div><strong>Humidity:</strong> {forecastItem.main.humidity}%</div>
+                    </Card.Body>
+                </Card>
         ));
     };
 

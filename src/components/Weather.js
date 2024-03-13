@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Card, Button } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
 
-function getCurrentFormattedDate() {
+
+function getCurrentFormattedDate(offset = 0) {
     const now = new Date();
-    const options = { day: 'numeric' , month: 'numeric', year: 'numeric' };
-    return now.toLocaleDateString('en-UK', options).replace(/ /g, '.');
+    now.setDate(now.getDate() + offset);
+    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    return now.toLocaleDateString('en-UK', options);
 }
 
 function getWindDirection(degree) {
@@ -85,6 +87,13 @@ const Weather = () => {
     const [location, setLocation] = useState('');
     const [forecast, setForecast] = useState([]);
     const [airPollution, setAirPollution] = useState(null);
+    const [selectedForecastDay, setSelectedForecastDay] = useState(0);
+
+    useEffect(() => {
+        if (location) {
+            fetchWeatherData(location);
+        }
+    }, [location, selectedForecastDay]);
 
     const fetchWeatherData = async (query) => {
         const apiKey = process.env.REACT_APP_WEATHER_API_KEY;
@@ -153,6 +162,14 @@ const Weather = () => {
         return localDate.toLocaleTimeString();
     };
 
+    const handlePreviousDay = () => {
+        setSelectedForecastDay(prevDay => Math.max(prevDay - 1, 0));
+    };
+
+    const handleNextDay = () => {
+        setSelectedForecastDay(prevDay => Math.min(prevDay + 1, forecast.length / 8 - 1));
+    };
+
 
     const weatherIconCode = weather && weather.weather[0] && weather.weather[0].icon;
     const weatherIconUrl = weatherIconCode ? `http://openweathermap.org/img/wn/${weatherIconCode}.png` : '';
@@ -162,15 +179,14 @@ const Weather = () => {
     const sunsetTime = weather ? convertToLocalTime(weather.sys.sunset, weather.timezone) : '';
     const localTime = weather ? new Date(Date.now() + weather.timezone * 1000).toLocaleTimeString() : '';
 
+
+
     const renderNextDayForecast = () => {
-        const now = new Date();
-        now.setDate(now.getDate() + 1); // Setting 'now' to the next day
-        const formattedDate = now.toISOString().split('T')[0];
-        const nextDayForecasts = forecast.filter(forecastItem => forecastItem.dt_txt.startsWith(formattedDate));
+        const dayForecasts = forecast.slice(selectedForecastDay * 8, (selectedForecastDay + 1) * 8);
+        if (dayForecasts.length === 0) return <div>No forecast data available.</div>;
 
-        if (nextDayForecasts.length === 0) return <div>No forecast data available.</div>;
+        return dayForecasts.map((forecastItem, index) => (
 
-        return nextDayForecasts.map((forecastItem, index) => (
             <Card key={index} className="mt-2">
                 <Card.Header>{new Date(forecastItem.dt_txt).toLocaleTimeString()}</Card.Header>
                 <Card.Body>
@@ -245,8 +261,12 @@ const Weather = () => {
                                     <Card.Text>PM10 (Coarse particulate matter): {airPollution.list[0].components.pm10.toFixed(2)} μg/m³ - {getPollutantLevel('pm10', airPollution.list[0].components.pm10)}</Card.Text>
                                     {forecast && forecast.length > 0 && (
                                         <Card className="mt-4">
-                                            <Card.Header as="h5">Forecast for Next Day</Card.Header>
+                                            <Card.Header as="h5">Forecast for {getCurrentFormattedDate(selectedForecastDay + 1)}</Card.Header>
                                             <Card.Body>
+                                                <div className="d-flex justify-content-between mb-3">
+                                                    <Button onClick={handlePreviousDay} disabled={selectedForecastDay === 0}>Previous Day</Button>
+                                                    <Button onClick={handleNextDay} disabled={selectedForecastDay === forecast.length / 8 - 1}>Next Day</Button>
+                                                </div>
                                                 {renderNextDayForecast()}
                                             </Card.Body>
                                         </Card>

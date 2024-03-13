@@ -15,6 +15,23 @@ function getWindDirection(degree) {
     if (degree > 292.5 && degree <= 337.5) return 'Northwest';
 }
 
+function getAQIQualitativeName(aqiValue) {
+    switch(aqiValue) {
+        case 1:
+            return 'Good';
+        case 2:
+            return 'Fair';
+        case 3:
+            return 'Moderate';
+        case 4:
+            return 'Poor';
+        case 5:
+            return 'Very Poor';
+        default:
+            return 'Unknown';
+    }
+}
+
 function getPollutantLevel(pollutant, value) {
     let level;
     if (pollutant === 'so2') {
@@ -165,7 +182,9 @@ const Weather = () => {
                             <Card className="text-center mt-3">
                                 <Card.Header as="h5">Air Quality Index (AQI)</Card.Header>
                                 <Card.Body>
-                                    <Card.Title>AQI: {airPollution.list[0].main.aqi}</Card.Title>
+                                    <Card.Title>
+                                        AQI levels as a whole: {airPollution.list[0].main.aqi} - {getAQIQualitativeName(airPollution.list[0].main.aqi)}
+                                    </Card.Title>
                                     <Card.Text>CO (Carbon monoxide): {airPollution.list[0].components.co.toFixed(2)} μg/m³ - {getPollutantLevel('co', airPollution.list[0].components.co)}</Card.Text>
                                     <Card.Text>NO2 (Nitrogen dioxide): {airPollution.list[0].components.no2.toFixed(2)} μg/m³ - {getPollutantLevel('no2', airPollution.list[0].components.no2)}</Card.Text>
                                     <Card.Text>O3 (Ozone): {airPollution.list[0].components.o3.toFixed(2)} μg/m³ - {getPollutantLevel('o3', airPollution.list[0].components.o3)}</Card.Text>

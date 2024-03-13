@@ -3,7 +3,6 @@ import { Container, Card, Button } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
 
-
 function getCurrentFormattedDate(offset = 0) {
     const now = new Date();
     now.setDate(now.getDate() + offset);

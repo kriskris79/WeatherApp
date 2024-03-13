@@ -7,14 +7,6 @@
     vertical-align: middle;
     transition: transform 0.3s ease-in-out;
 
-    &.north { transform: rotate(0deg); }
-    &.northeast { transform: rotate(45deg); }
-    &.east { transform: rotate(90deg); }
-    &.southeast { transform: rotate(135deg); }
-    &.south { transform: rotate(180deg); }
-    &.southwest { transform: rotate(225deg); }
-    &.west { transform: rotate(270deg); }
-    &.northwest { transform: rotate(315deg); }
   }
 }
 

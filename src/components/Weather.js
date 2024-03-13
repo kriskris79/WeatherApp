@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { Container, Card, Button } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
+function calculateRotation(degree) {
+    return `rotate(${degree}deg)`;
+}
+
 function getWindDirection(degree) {
     if (degree > 337.5 || degree <= 22.5) return 'North';
     if (degree > 22.5 && degree <= 67.5) return 'Northeast';
@@ -112,7 +116,12 @@ const Weather = () => {
                         <Card.Text>Wind Speed: {windSpeedInKmh} km/h</Card.Text>
                         <Card.Text className="wind-direction">
                             Wind Direction: {getWindDirection(weather.wind.deg)}
-                            <img src={windArrow} alt="Wind Direction" className="wind-arrow" style={{ marginLeft: '5px' }} />
+                            <img
+                                src={windArrow}
+                                alt="Wind Direction"
+                                className={`wind-arrow ${getWindDirection(weather.wind.deg).toLowerCase()}`}
+                                style={{ marginLeft: '5px' }}
+                            />
                         </Card.Text>
                         <Card.Text>Pressure: {weather.main.pressure} hPa</Card.Text>
                         <Card.Text>Humidity: {weather.main.humidity}%</Card.Text>

@@ -88,11 +88,7 @@ const Weather = () => {
     const [airPollution, setAirPollution] = useState(null);
     const [selectedForecastDay, setSelectedForecastDay] = useState(0);
 
-    useEffect(() => {
-        if (location) {
-            fetchWeatherData(location);
-        }
-    }, [location, selectedForecastDay]);
+
 
     const fetchWeatherData = async (query) => {
         const apiKey = process.env.REACT_APP_WEATHER_API_KEY;
@@ -149,8 +145,12 @@ const Weather = () => {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        fetchWeatherData(location.trim());
+        if (location) {
+            fetchWeatherData(location.trim());
+        }
     };
+
+
 
     const windSpeedInKmh = weather ? (weather.wind.speed * 3.6).toFixed(2) : 0;
 

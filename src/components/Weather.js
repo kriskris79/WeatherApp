@@ -78,6 +78,7 @@ function getPollutantLevel(pollutant, value) {
 const Weather = () => {
     const [weather, setWeather] = useState(null);
     const [location, setLocation] = useState('');
+    const [forecast, setForecast] = useState([]);
     const [airPollution, setAirPollution] = useState(null);
 
     const fetchWeatherData = async (query) => {
@@ -90,6 +91,7 @@ const Weather = () => {
             if (data.cod === 200) {
                 setWeather(data);
                 fetchAirPollutionData(data.coord.lat, data.coord.lon);
+                fetchForecastData(data.coord.lat, data.coord.lon);
             } else {
                 console.error('Weather data fetch error:', data.message);
                 setWeather(null);
@@ -97,6 +99,19 @@ const Weather = () => {
         } catch (error) {
             console.error("Error fetching data: ", error.message);
             setWeather(null);
+        }
+    };
+
+    const fetchForecastData = async (lat, lon) => {
+        const apiKey = process.env.REACT_APP_WEATHER_FORECAST_API_KEY;
+        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.cod === "200") {
+            setForecast(data.list);
+        } else {
+            console.error('Forecast data fetch error:', data.message);
+            setForecast([]);
         }
     };
 
@@ -141,6 +156,28 @@ const Weather = () => {
     const sunriseTime = weather ? convertToLocalTime(weather.sys.sunrise, weather.timezone) : '';
     const sunsetTime = weather ? convertToLocalTime(weather.sys.sunset, weather.timezone) : '';
     const localTime = weather ? new Date(Date.now() + weather.timezone * 1000).toLocaleTimeString() : '';
+
+    const renderNextDayForecast = () => {
+        const now = new Date();
+        now.setDate(now.getDate() + 1);
+        const formattedDate = now.toISOString().split('T')[0];
+        const nextDayForecasts = forecast.filter(forecastItem => forecastItem.dt_txt.startsWith(formattedDate));
+        if (nextDayForecasts.length === 0) return <div>No forecast data available.</div>;
+        return nextDayForecasts.map((forecastItem, index) => (
+            <Card key={index} className="mt-2">
+                <Card.Header>{new Date(forecastItem.dt_txt).toLocaleTimeString()}</Card.Header>
+                <Card.Body>
+                    <div><strong>Temperature:</strong> {forecastItem.main.temp} °C</div>
+                    <div className="weather-icon-container">
+                        <img src={`http://openweathermap.org/img/wn/${forecastItem.weather[0].icon}.png`} alt="Weather Icon" />
+                        <span>{forecastItem.weather[0].description}</span>
+                    </div>
+                    <div><strong>Wind Speed:</strong> {(forecastItem.wind.speed * 3.6).toFixed(2)} km/h</div>
+                </Card.Body>
+            </Card>
+        ));
+    };
+
     return (
         <Container className="my-4">
             <form onSubmit={handleSearch}>
@@ -191,6 +228,14 @@ const Weather = () => {
                                     <Card.Text>SO2 (Sulphur dioxide): {airPollution.list[0].components.so2.toFixed(2)} μg/m³ - {getPollutantLevel('so2', airPollution.list[0].components.so2)}</Card.Text>
                                     <Card.Text>PM2.5 (Fine particles matter): {airPollution.list[0].components.pm2_5.toFixed(2)} μg/m³ - {getPollutantLevel('pm2_5', airPollution.list[0].components.pm2_5)}</Card.Text>
                                     <Card.Text>PM10 (Coarse particulate matter): {airPollution.list[0].components.pm10.toFixed(2)} μg/m³ - {getPollutantLevel('pm10', airPollution.list[0].components.pm10)}</Card.Text>
+                                    {forecast && forecast.length > 0 && (
+                                        <Card className="mt-4">
+                                            <Card.Header as="h5">Forecast for Next Day</Card.Header>
+                                            <Card.Body>
+                                                {renderNextDayForecast()}
+                                            </Card.Body>
+                                        </Card>
+                                    )}
                                 </Card.Body>
                             </Card>
                         )}

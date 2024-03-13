@@ -2,7 +2,6 @@ import React, { useState} from 'react';
 import { Container, Card, Button } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
-
 function getCurrentFormattedDate(offset = 0) {
     const now = new Date();
     now.setDate(now.getDate() + offset);
@@ -80,7 +79,6 @@ function getPollutantLevel(pollutant, value) {
     return level;
 }
 
-
 const Weather = () => {
     const [weather, setWeather] = useState(null);
     const [location, setLocation] = useState('');
@@ -151,7 +149,6 @@ const Weather = () => {
     };
 
 
-
     const windSpeedInKmh = weather ? (weather.wind.speed * 3.6).toFixed(2) : 0;
 
     //convert UTC time to local time
@@ -177,7 +174,6 @@ const Weather = () => {
     const sunriseTime = weather ? convertToLocalTime(weather.sys.sunrise, weather.timezone) : '';
     const sunsetTime = weather ? convertToLocalTime(weather.sys.sunset, weather.timezone) : '';
     const localTime = weather ? new Date(Date.now() + weather.timezone * 1000).toLocaleTimeString() : '';
-
 
 
     const renderNextDayForecast = () => {
@@ -275,8 +271,6 @@ const Weather = () => {
                         )}
                     </Card.Body>
                 </Card>
-
-
             )}
         </Container>
     );

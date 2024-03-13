@@ -13,6 +13,14 @@ function getWindDirection(degree) {
     if (degree > 292.5 && degree <= 337.5) return 'Northwest';
 }
 
+function getAQILevel(pm25) {
+    if (pm25 <= 10) return { level: 'Good', color: 'Green' };
+    else if (pm25 <= 25) return { level: 'Fair', color: 'Yellow' };
+    else if (pm25 <= 50) return { level: 'Moderate', color: 'Orange' };
+    else if (pm25 <= 75) return { level: 'Poor', color: 'Red' };
+    else return { level: 'Very Poor', color: 'Black' };
+}
+
 const Weather = () => {
     const [weather, setWeather] = useState(null);
     const [location, setLocation] = useState('');

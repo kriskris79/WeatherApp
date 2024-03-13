@@ -3,6 +3,11 @@ import { Container, Card, Button } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
 
+function getCurrentFormattedDate() {
+    const now = new Date();
+    const options = { day: 'numeric' , month: 'numeric', year: 'numeric' };
+    return now.toLocaleDateString('en-UK', options).replace(/ /g, '.');
+}
 
 function getWindDirection(degree) {
     if (degree > 337.5 || degree <= 22.5) return 'North';
@@ -199,7 +204,9 @@ const Weather = () => {
             </form>
             {weather && (
                 <Card className="text-center">
-                    <Card.Header as="h5">Weather in {weather.name}, {weather.sys.country}</Card.Header>
+                    <Card.Header as="h5">
+                        Weather in {weather.name}, {weather.sys.country} today is {getCurrentFormattedDate()}
+                    </Card.Header>
                     <Card.Body>
                         <Card.Title>{weather.main.temp} °C</Card.Title>
                         {weatherIconUrl && (

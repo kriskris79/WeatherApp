@@ -93,6 +93,10 @@ const Weather = () => {
     const [loading, setLoading] = useState(false);
     const [tempUnit, setTempUnit] = useState('metric');
 
+
+
+
+
     const toggleTempUnit = () => {
         setTempUnit(tempUnit === 'metric' ? 'standard' : 'metric');
     };

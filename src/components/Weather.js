@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import { Container, Card, Button, Form, ProgressBar, Switch } from 'react-bootstrap';
+import { Container, Card, Button, Form, ProgressBar } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
 function getCurrentFormattedDate(offset = 0) {
@@ -92,10 +92,10 @@ const Weather = () => {
     const [selectedForecastDay, setSelectedForecastDay] = useState(0);
     const [loading, setLoading] = useState(false);
     const [tempUnit, setTempUnit] = useState('metric');
-    const [showExplanation, setShowExplanation] = useState(false);
 
 
-    const toggleExplanation = () => setShowExplanation(!showExplanation);
+
+
 
     const toggleTempUnit = () => {
         setTempUnit(tempUnit === 'metric' ? 'standard' : 'metric');
@@ -190,14 +190,7 @@ const Weather = () => {
     const sunsetTime = weather ? convertToLocalTime(weather.sys.sunset, weather.timezone) : '';
     const localTime = weather ? new Date(Date.now() + weather.timezone * 1000).toLocaleTimeString() : '';
 
-    const explanationTexts = {
-        co: "Carbon monoxide (CO) is a colorless, odorless gas that can be harmful when inhaled in large amounts.",
-        no2: "Nitrogen dioxide (NO2) is a significant air pollutant responsible for poor air quality and can impact respiratory function.",
-        o3: "Ozone (O3) at ground level is formed when pollutants react with sunlight. While beneficial in the upper atmosphere, at ground level, it can cause respiratory issues. 'Good' levels are below 100 µg/m³.",
-        so2: "Sulphur dioxide (SO2) is a gas produced by volcanic eruptions and industrial processes. It can affect the respiratory system and the functions of the lungs. 'Good' levels are below 20 µg/m³.",
-        pm2_5: "PM2.5 refers to particulate matter smaller than 2.5 micrometers. It can penetrate deep into the lungs and bloodstream, causing health issues. 'Good' levels are below 25 µg/m³.",
-        pm10: "PM10 refers to particulate matter smaller than 10 micrometers. These particles can cause respiratory issues when inhaled. 'Good' levels are below 50 µg/m³."
-    };
+
 
 
     const renderNextDayForecast = () => {

@@ -232,7 +232,7 @@ const Weather = () => {
         <Container className="my-4 ">
             <Card className="text-center ">
 
-                    <Card.Title className="text-center mt-3 mb-3">Your global weather and air quality wallet</Card.Title>
+                    <Card.Title className="text-center mt-3 mb-3">Your World Weather: Current Conditions/Forecast + Air Quality Tracker</Card.Title>
                     <Form onSubmit={handleSearch}>
                         <Form.Group controlId="cityInput" className="mt-3 mb-3">
                             <Form.Control

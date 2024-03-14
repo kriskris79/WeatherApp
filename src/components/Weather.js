@@ -79,6 +79,8 @@ function getPollutantLevel(pollutant, value) {
     return level;
 }
 
+const convertToKelvin = (celsius) => celsius + 273.15;
+
 const Weather = () => {
     const [weather, setWeather] = useState(null);
     const [location, setLocation] = useState('');
@@ -86,7 +88,11 @@ const Weather = () => {
     const [airPollution, setAirPollution] = useState(null);
     const [selectedForecastDay, setSelectedForecastDay] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [tempUnit, setTempUnit] = useState('metric');
 
+    const toggleTempUnit = () => {
+        setTempUnit(tempUnit === 'metric' ? 'standard' : 'metric');
+    };
 
     const fetchWeatherData = async (query) => {
         setLoading(true);
@@ -189,7 +195,10 @@ const Weather = () => {
             <Card key={index} className="mb-3 mt-3">
                 <Card.Header>{new Date(forecastItem.dt_txt).toLocaleTimeString()}</Card.Header>
 
-                    <div><strong>Temperature:</strong> {forecastItem.main.temp} °C</div>
+                <div>
+                    <strong>Temperature:</strong>
+                    {tempUnit === 'metric' ? `${forecastItem.main.temp} °C` : `${convertToKelvin(forecastItem.main.temp)} K`}
+                </div>
                     <div className="weather-icon-container">
                         <img src={`http://openweathermap.org/img/wn/${forecastItem.weather[0].icon}.png`} alt="Weather Icon" />
                         <span>{forecastItem.weather[0].description}</span>
@@ -238,7 +247,18 @@ const Weather = () => {
                         Weather in {weather.name}, {weather.sys.country} today is {getCurrentFormattedDate()}
                     </Card.Header>
 
-                        <Card.Title>{weather.main.temp} °C</Card.Title>
+                    <Card.Title>
+                        {tempUnit === 'metric' ? `${weather.main.temp} °C` : `${convertToKelvin(weather.main.temp)} K`}
+                        <Form>
+                            <Form.Check
+                                type="switch"
+                                id="temp-unit-switch"
+                                label="Celsius / Kelvin"
+                                onChange={toggleTempUnit}
+                                checked={tempUnit === 'standard'}
+                            />
+                        </Form>
+                    </Card.Title>
                         {weatherIconUrl && (
                             <div className="weather-icon-container ">
                                 <img src={weatherIconUrl} alt="Weather Icon"  />

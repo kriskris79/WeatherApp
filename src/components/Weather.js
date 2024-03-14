@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import { Container, Card, Button } from 'react-bootstrap';
+import { Container, Card, Button, Form } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
 function getCurrentFormattedDate(offset = 0) {
@@ -176,15 +176,17 @@ const Weather = () => {
     const localTime = weather ? new Date(Date.now() + weather.timezone * 1000).toLocaleTimeString() : '';
 
 
+
+
     const renderNextDayForecast = () => {
         const dayForecasts = forecast.slice(selectedForecastDay * 8, (selectedForecastDay + 1) * 8);
         if (dayForecasts.length === 0) return <div>No forecast data available.</div>;
 
         return dayForecasts.map((forecastItem, index) => (
 
-            <Card key={index} className="mt-2">
+            <Card key={index} className="mb-3 mt-3">
                 <Card.Header>{new Date(forecastItem.dt_txt).toLocaleTimeString()}</Card.Header>
-                <Card.Body>
+
                     <div><strong>Temperature:</strong> {forecastItem.main.temp} °C</div>
                     <div className="weather-icon-container">
                         <img src={`http://openweathermap.org/img/wn/${forecastItem.weather[0].icon}.png`} alt="Weather Icon" />
@@ -197,31 +199,41 @@ const Weather = () => {
                     </div>
                     <div><strong>Pressure:</strong> {forecastItem.main.pressure} hPa</div>
                     <div><strong>Humidity:</strong> {forecastItem.main.humidity}%</div>
-                </Card.Body>
+
             </Card>
         ));
     };
 
     return (
-        <Container className="my-4">
-            <form onSubmit={handleSearch}>
-                <input
-                    type="text"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Enter city name"
-                />
-                <Button type="submit" variant="primary">Get Weather</Button>
-            </form>
+        <Container className="my-4 ">
+            <Card className="text-center ">
+
+                    <Card.Title className="text-center mt-3 mb-3">Your global weather and air quality wallet</Card.Title>
+                    <Form onSubmit={handleSearch}>
+                        <Form.Group controlId="cityInput" className="mt-3 mb-3">
+                            <Form.Control
+                                type="text"
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                                placeholder="Enter city name"
+                                className="glow-on-focus"
+                            />
+                        </Form.Group>
+                        <div className="d-flex justify-content-center">
+                            <Button type="submit" variant="primary" className="btn">Get Weather</Button>
+                        </div>
+                    </Form>
+
+            </Card>
             {weather && (
-                <Card className="text-center">
-                    <Card.Header as="h5">
+                <Card className="mb-4 text-center mt-3">
+                    <Card.Header className=" mb-3" as="h5">
                         Weather in {weather.name}, {weather.sys.country} today is {getCurrentFormattedDate()}
                     </Card.Header>
-                    <Card.Body>
+
                         <Card.Title>{weather.main.temp} °C</Card.Title>
                         {weatherIconUrl && (
-                            <div className="weather-icon-container">
+                            <div className="weather-icon-container ">
                                 <img src={weatherIconUrl} alt="Weather Icon"  />
                                 <Card.Text className="weather-description">{weather.weather[0].description}</Card.Text>
                             </div>
@@ -242,9 +254,9 @@ const Weather = () => {
                         <Card.Text>Sunset: {sunsetTime}</Card.Text>
                         <Card.Text>Local Time: {localTime}</Card.Text>
                         {airPollution && (
-                            <Card className="text-center mt-3">
-                                <Card.Header as="h5">Air Quality Index (AQI)</Card.Header>
-                                <Card.Body>
+                            <Card className="mb-4 text-center mt-3">
+                                <Card.Header className=" mb-3" as="h5">Air Quality Index (AQI)</Card.Header>
+
                                     <Card.Title>
                                         AQI levels as a whole: {airPollution.list[0].main.aqi} - {getAQIQualitativeName(airPollution.list[0].main.aqi)}
                                     </Card.Title>
@@ -255,21 +267,21 @@ const Weather = () => {
                                     <Card.Text>PM2.5 (Fine particles matter): {airPollution.list[0].components.pm2_5.toFixed(2)} μg/m³ - {getPollutantLevel('pm2_5', airPollution.list[0].components.pm2_5)}</Card.Text>
                                     <Card.Text>PM10 (Coarse particulate matter): {airPollution.list[0].components.pm10.toFixed(2)} μg/m³ - {getPollutantLevel('pm10', airPollution.list[0].components.pm10)}</Card.Text>
                                     {forecast && forecast.length > 0 && (
-                                        <Card className="mt-4">
+                                        <Card className=" text-canter ">
                                             <Card.Header as="h5">Forecast for {getCurrentFormattedDate(selectedForecastDay + 1)}</Card.Header>
-                                            <Card.Body>
-                                                <div className="d-flex justify-content-between mb-3">
+
+                                                <div className="d-flex justify-content-between ">
                                                     <Button onClick={handlePreviousDay} disabled={selectedForecastDay === 0}>Previous Day</Button>
                                                     <Button onClick={handleNextDay} disabled={selectedForecastDay === forecast.length / 8 - 1}>Next Day</Button>
                                                 </div>
                                                 {renderNextDayForecast()}
-                                            </Card.Body>
+
                                         </Card>
                                     )}
-                                </Card.Body>
+
                             </Card>
                         )}
-                    </Card.Body>
+
                 </Card>
             )}
         </Container>

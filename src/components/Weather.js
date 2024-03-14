@@ -79,7 +79,10 @@ function getPollutantLevel(pollutant, value) {
     return level;
 }
 
-const convertToKelvin = (celsius) => celsius + 273.15;
+const convertToKelvin = (celsiusTemp) => {
+    // round to two d.p.
+    return (celsiusTemp + 273.15).toFixed(2);
+};
 
 const Weather = () => {
     const [weather, setWeather] = useState(null);
@@ -247,8 +250,10 @@ const Weather = () => {
                         Weather in {weather.name}, {weather.sys.country} today is {getCurrentFormattedDate()}
                     </Card.Header>
 
-                    <Card.Title>
-                        {tempUnit === 'metric' ? `${weather.main.temp} °C` : `${convertToKelvin(weather.main.temp)} K`}
+                    <Card.Title className="d-flex justify-content-center align-items-center">
+                    <span className="mr-3" style={{ marginRight: '1rem' }}>
+                     {tempUnit === 'metric' ? `${weather.main.temp} °C` : `${convertToKelvin(weather.main.temp)} K`}
+                     </span>
                         <Form>
                             <Form.Check
                                 type="switch"

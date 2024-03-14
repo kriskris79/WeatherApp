@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import { Container, Card, Button, Form } from 'react-bootstrap';
+import { Container, Card, Button, Form, ProgressBar } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
 function getCurrentFormattedDate(offset = 0) {
@@ -85,10 +85,11 @@ const Weather = () => {
     const [forecast, setForecast] = useState([]);
     const [airPollution, setAirPollution] = useState(null);
     const [selectedForecastDay, setSelectedForecastDay] = useState(0);
-
+    const [loading, setLoading] = useState(false);
 
 
     const fetchWeatherData = async (query) => {
+        setLoading(true);
         const apiKey = process.env.REACT_APP_WEATHER_API_KEY;
         const url = `https://api.openweathermap.org/data/2.5/weather?q=${query}&units=metric&appid=${apiKey}`;
 
@@ -107,6 +108,7 @@ const Weather = () => {
             console.error("Error fetching data: ", error.message);
             setWeather(null);
         }
+        setLoading(false);
     };
 
     const fetchForecastData = async (lat, lon) => {
@@ -222,6 +224,11 @@ const Weather = () => {
                         <div className="d-flex justify-content-center">
                             <Button type="submit" variant="primary" className="btn">Get Weather</Button>
                         </div>
+                        {loading && (
+                            <div className="mt-3">
+                                <ProgressBar animated now={100} />
+                            </div>
+                        )}
                     </Form>
 
             </Card>

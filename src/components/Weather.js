@@ -257,7 +257,7 @@ const Weather = () => {
             {weather && (
                 <Card className="mb-4 text-center mt-3">
                     <Card.Header className=" mb-3" as="h5">
-                        Weather in {weather.name}, {weather.sys.country} today is {getCurrentFormattedDate()}
+                        Current weather in {weather.name}, {weather.sys.country} today is {getCurrentFormattedDate()}
                     </Card.Header>
 
                     <Card.Title className="d-flex justify-content-center align-items-center">
@@ -339,10 +339,10 @@ const Weather = () => {
 
                                     {forecast && forecast.length > 0 && (
                                         <Card className=" text-canter ">
-                                            <Card.Header as="h5" className="mb-3">5-Day Weather Forecast</Card.Header>
+                                            <Card.Header as="h5" className="mb-3">5-Day Weather Forecast (3-hour intervals)</Card.Header>
                                             <Card.Title> {getCurrentFormattedDate(selectedForecastDay+1)}</Card.Title>
 
-                                                <div className="d-flex justify-content-between ">
+                                                <div className=" justify-content-between ">
                                                     <Button onClick={handlePreviousDay} disabled={selectedForecastDay === 0}>Previous Day</Button>
                                                     <Button onClick={handleNextDay} disabled={selectedForecastDay === forecast.length / 8 - 1}>Next Day</Button>
                                                 </div>

@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import { Container, Card, Button } from 'react-bootstrap';
+import { Container, Card, Button, Form } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
 function getCurrentFormattedDate(offset = 0) {
@@ -176,6 +176,8 @@ const Weather = () => {
     const localTime = weather ? new Date(Date.now() + weather.timezone * 1000).toLocaleTimeString() : '';
 
 
+
+
     const renderNextDayForecast = () => {
         const dayForecasts = forecast.slice(selectedForecastDay * 8, (selectedForecastDay + 1) * 8);
         if (dayForecasts.length === 0) return <div>No forecast data available.</div>;
@@ -204,17 +206,27 @@ const Weather = () => {
 
     return (
         <Container className="my-4">
-            <form onSubmit={handleSearch}>
-                <input
-                    type="text"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Enter city name"
-                />
-                <Button type="submit" variant="primary">Get Weather</Button>
-            </form>
+            <Card className="my-4">
+                <Card.Body>
+                    <Card.Title className="text-center mb-4">Your global weather and air quality wallet</Card.Title>
+                    <Form onSubmit={handleSearch}>
+                        <Form.Group controlId="cityInput" className="mb-3">
+                            <Form.Control
+                                type="text"
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                                placeholder="Enter city name"
+                                className="glow-on-focus"
+                            />
+                        </Form.Group>
+                        <div className="d-flex justify-content-center">
+                            <Button type="submit" variant="primary">Get Weather</Button>
+                        </div>
+                    </Form>
+                </Card.Body>
+            </Card>
             {weather && (
-                <Card className="text-center">
+                <Card className="mb-4 text-center">
                     <Card.Header as="h5">
                         Weather in {weather.name}, {weather.sys.country} today is {getCurrentFormattedDate()}
                     </Card.Header>
@@ -242,7 +254,7 @@ const Weather = () => {
                         <Card.Text>Sunset: {sunsetTime}</Card.Text>
                         <Card.Text>Local Time: {localTime}</Card.Text>
                         {airPollution && (
-                            <Card className="text-center mt-3">
+                            <Card className="mb-4 text-center">
                                 <Card.Header as="h5">Air Quality Index (AQI)</Card.Header>
                                 <Card.Body>
                                     <Card.Title>
@@ -255,7 +267,7 @@ const Weather = () => {
                                     <Card.Text>PM2.5 (Fine particles matter): {airPollution.list[0].components.pm2_5.toFixed(2)} μg/m³ - {getPollutantLevel('pm2_5', airPollution.list[0].components.pm2_5)}</Card.Text>
                                     <Card.Text>PM10 (Coarse particulate matter): {airPollution.list[0].components.pm10.toFixed(2)} μg/m³ - {getPollutantLevel('pm10', airPollution.list[0].components.pm10)}</Card.Text>
                                     {forecast && forecast.length > 0 && (
-                                        <Card className="mt-4">
+                                        <Card className="mb-4 text-canter">
                                             <Card.Header as="h5">Forecast for {getCurrentFormattedDate(selectedForecastDay + 1)}</Card.Header>
                                             <Card.Body>
                                                 <div className="d-flex justify-content-between mb-3">

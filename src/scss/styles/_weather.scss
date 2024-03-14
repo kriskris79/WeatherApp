@@ -1,3 +1,5 @@
+
+
 .wind-direction {
 
   .wind-arrow {
@@ -10,6 +12,16 @@
   }
 }
 
+.glow-on-focus:focus {
+  outline: none;
+  box-shadow: 0 0 10px #719ECE;
+
+  &:focus {
+    outline: none; // Removes the default outline on focus
+    box-shadow: 0 0 8px rgba(81, 203, 238, 1);
+  }
+}
+
 .weather-icon-container {
   text-align: center;
 
@@ -19,6 +31,5 @@
   }
 
   .weather-description {
-
   }
 }

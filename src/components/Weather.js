@@ -92,13 +92,17 @@ const Weather = () => {
     const [selectedForecastDay, setSelectedForecastDay] = useState(0);
     const [loading, setLoading] = useState(false);
     const [tempUnit, setTempUnit] = useState('metric');
-
+    const [showExplanation, setShowExplanation] = useState(false);
 
 
 
 
     const toggleTempUnit = () => {
         setTempUnit(tempUnit === 'metric' ? 'standard' : 'metric');
+    };
+
+    const toggleExplanation = () => {
+        setShowExplanation(!showExplanation);
     };
 
     const fetchWeatherData = async (query) => {
@@ -222,6 +226,8 @@ const Weather = () => {
         ));
     };
 
+
+
     return (
         <Container className="my-4 ">
             <Card className="text-center ">
@@ -292,16 +298,40 @@ const Weather = () => {
                         {airPollution && (
                             <Card className="mb-4 text-center mt-3">
                                 <Card.Header className=" mb-3" as="h5">Air Quality Index (AQI)</Card.Header>
+                                <Form>
+                                    <Form.Check
+                                        type="switch"
+                                        id="explanation-switch"
+                                        label="Show explanations"
+                                        onChange={toggleExplanation}
+                                        checked={showExplanation}
+                                    />
+                                </Form>
 
-                                    <Card.Title>
-                                        AQI levels as a whole: {airPollution.list[0].main.aqi} - {getAQIQualitativeName(airPollution.list[0].main.aqi)}
-                                    </Card.Title>
-                                    <Card.Text>CO (Carbon monoxide): {airPollution.list[0].components.co.toFixed(2)} μg/m³ - {getPollutantLevel('co', airPollution.list[0].components.co)}</Card.Text>
-                                    <Card.Text>NO2 (Nitrogen dioxide): {airPollution.list[0].components.no2.toFixed(2)} μg/m³ - {getPollutantLevel('no2', airPollution.list[0].components.no2)}</Card.Text>
-                                    <Card.Text>O3 (Ozone): {airPollution.list[0].components.o3.toFixed(2)} μg/m³ - {getPollutantLevel('o3', airPollution.list[0].components.o3)}</Card.Text>
-                                    <Card.Text>SO2 (Sulphur dioxide): {airPollution.list[0].components.so2.toFixed(2)} μg/m³ - {getPollutantLevel('so2', airPollution.list[0].components.so2)}</Card.Text>
-                                    <Card.Text>PM2.5 (Fine particles matter): {airPollution.list[0].components.pm2_5.toFixed(2)} μg/m³ - {getPollutantLevel('pm2_5', airPollution.list[0].components.pm2_5)}</Card.Text>
-                                    <Card.Text>PM10 (Coarse particulate matter): {airPollution.list[0].components.pm10.toFixed(2)} μg/m³ - {getPollutantLevel('pm10', airPollution.list[0].components.pm10)}</Card.Text>
+                                <Card.Title>
+                                    AQI levels as a whole: {airPollution.list[0].main.aqi} - {getAQIQualitativeName(airPollution.list[0].main.aqi)}
+                                </Card.Title>
+                                <Card.Text>CO (Carbon monoxide): {airPollution.list[0].components.co.toFixed(2)} μg/m³ - {getPollutantLevel('co', airPollution.list[0].components.co)}</Card.Text>
+                                {showExplanation && <Card.Text>CO is a gas you can't see or smell. It's bad for you if you breathe in a lot of it.</Card.Text>}
+                                <Card.Text>NO2 (Nitrogen dioxide): {airPollution.list[0].components.no2.toFixed(2)} μg/m³ - {getPollutantLevel('no2', airPollution.list[0].components.no2)}</Card.Text>
+                                {showExplanation && <Card.Text>NO2 comes from cars and factories. Breathing it can make it harder to breathe.</Card.Text>}
+                                <Card.Text>O3 (Ozone): {airPollution.list[0].components.o3.toFixed(2)} μg/m³ - {getPollutantLevel('o3', airPollution.list[0].components.o3)}</Card.Text>
+                                {showExplanation && <Card.Text>O3 Ozone is good up high in the sky but bad on the ground. It can make your chest feel tight.</Card.Text>}
+                                <Card.Text>SO2 (Sulphur dioxide): {airPollution.list[0].components.so2.toFixed(2)} μg/m³ - {getPollutantLevel('so2', airPollution.list[0].components.so2)}</Card.Text>
+                                {showExplanation && <Card.Text>SO2 comes from factories and volcanoes. It can make your air dirty and make it hard to breathe.</Card.Text>}
+                                <Card.Text>PM2.5 (Fine particles matter): {airPollution.list[0].components.pm2_5.toFixed(2)} μg/m³ - {getPollutantLevel('pm2_5', airPollution.list[0].components.pm2_5)}</Card.Text>
+                                {showExplanation && <Card.Text>PM2.5 are tiny (smaller than 2.5 micrometers) bits in the air that can go deep into your lungs and are not good for you.</Card.Text>}
+                                <Card.Text>PM10 (Coarse particulate matter): {airPollution.list[0].components.pm10.toFixed(2)} μg/m³ - {getPollutantLevel('pm10', airPollution.list[0].components.pm10)}</Card.Text>
+                                {showExplanation && <Card.Text>PM10 are like PM2.5 but bigger (smaller than 10 micrometers).They can still get into your lungs and cause problems.</Card.Text>}
+
+                                {forecast && forecast.length > 0 && (
+                                 <Card className="text-center">
+                                  {/* Forecast content */}
+                                 </Card>
+                            )}
+
+
+
                                     {forecast && forecast.length > 0 && (
                                         <Card className=" text-canter ">
                                             <Card.Header as="h5">Forecast for {getCurrentFormattedDate(selectedForecastDay + 1)}</Card.Header>

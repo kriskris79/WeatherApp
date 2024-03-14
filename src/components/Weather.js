@@ -184,9 +184,9 @@ const Weather = () => {
 
         return dayForecasts.map((forecastItem, index) => (
 
-            <Card key={index} className="mt-2">
+            <Card key={index} className="mb-3">
                 <Card.Header>{new Date(forecastItem.dt_txt).toLocaleTimeString()}</Card.Header>
-                <Card.Body>
+
                     <div><strong>Temperature:</strong> {forecastItem.main.temp} °C</div>
                     <div className="weather-icon-container">
                         <img src={`http://openweathermap.org/img/wn/${forecastItem.weather[0].icon}.png`} alt="Weather Icon" />
@@ -199,15 +199,15 @@ const Weather = () => {
                     </div>
                     <div><strong>Pressure:</strong> {forecastItem.main.pressure} hPa</div>
                     <div><strong>Humidity:</strong> {forecastItem.main.humidity}%</div>
-                </Card.Body>
+
             </Card>
         ));
     };
 
     return (
         <Container className="my-4">
-            <Card className="my-4">
-                <Card.Body>
+            <Card className="text-center mb-3">
+
                     <Card.Title className="text-center mb-4">Your global weather and air quality wallet</Card.Title>
                     <Form onSubmit={handleSearch}>
                         <Form.Group controlId="cityInput" className="mb-3">
@@ -220,17 +220,17 @@ const Weather = () => {
                             />
                         </Form.Group>
                         <div className="d-flex justify-content-center">
-                            <Button type="submit" variant="primary">Get Weather</Button>
+                            <Button type="submit" variant="primary" className="btn">Get Weather</Button>
                         </div>
                     </Form>
-                </Card.Body>
+
             </Card>
             {weather && (
                 <Card className="mb-4 text-center">
                     <Card.Header as="h5">
                         Weather in {weather.name}, {weather.sys.country} today is {getCurrentFormattedDate()}
                     </Card.Header>
-                    <Card.Body>
+
                         <Card.Title>{weather.main.temp} °C</Card.Title>
                         {weatherIconUrl && (
                             <div className="weather-icon-container">
@@ -256,7 +256,7 @@ const Weather = () => {
                         {airPollution && (
                             <Card className="mb-4 text-center">
                                 <Card.Header as="h5">Air Quality Index (AQI)</Card.Header>
-                                <Card.Body>
+
                                     <Card.Title>
                                         AQI levels as a whole: {airPollution.list[0].main.aqi} - {getAQIQualitativeName(airPollution.list[0].main.aqi)}
                                     </Card.Title>
@@ -269,19 +269,19 @@ const Weather = () => {
                                     {forecast && forecast.length > 0 && (
                                         <Card className="mb-4 text-canter">
                                             <Card.Header as="h5">Forecast for {getCurrentFormattedDate(selectedForecastDay + 1)}</Card.Header>
-                                            <Card.Body>
+
                                                 <div className="d-flex justify-content-between mb-3">
                                                     <Button onClick={handlePreviousDay} disabled={selectedForecastDay === 0}>Previous Day</Button>
                                                     <Button onClick={handleNextDay} disabled={selectedForecastDay === forecast.length / 8 - 1}>Next Day</Button>
                                                 </div>
                                                 {renderNextDayForecast()}
-                                            </Card.Body>
+
                                         </Card>
                                     )}
-                                </Card.Body>
+
                             </Card>
                         )}
-                    </Card.Body>
+
                 </Card>
             )}
         </Container>

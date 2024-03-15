@@ -363,8 +363,6 @@ const Weather = () => {
                                  </Card>
                             )}
 
-
-
                                     {forecast && forecast.length > 0 && (
                                         <Card className=" text-canter ">
                                             <Card.Header as="h5" className="mb-3">5-Day Weather Forecast (3-hour intervals)</Card.Header>

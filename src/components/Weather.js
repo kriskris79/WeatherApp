@@ -368,7 +368,7 @@ const Weather = () => {
                                     {forecast && forecast.length > 0 && (
                                         <Card className=" text-canter ">
                                             <Card.Header as="h5" className="mb-3">5-Day Weather Forecast (3-hour intervals)</Card.Header>
-                                            <Card.Title> {getCurrentFormattedDate(selectedForecastDay+1)}</Card.Title>
+                                            <Card.Title> {getCurrentFormattedDate(selectedForecastDay)}</Card.Title>
 
                                                 <div className=" justify-content-between ">
                                                     <Button onClick={handlePreviousDay} disabled={selectedForecastDay === 0}>Previous Day</Button>

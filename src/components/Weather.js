@@ -197,15 +197,6 @@ const Weather = () => {
     const weatherIconCode = weather && weather.weather[0] && weather.weather[0].icon;
     const weatherIconUrl = weatherIconCode ? `http://openweathermap.org/img/wn/${weatherIconCode}.png` : '';
 
-    //timezone offset to adjust times
-    const sunriseTime = weather ? convertToLocalTime(weather.sys.sunrise, weather.timezone) : '';
-    const sunsetTime = weather ? convertToLocalTime(weather.sys.sunset, weather.timezone) : '';
-    const localTime = weather ? new Date(Date.now() + weather.timezone * 1000).toLocaleTimeString() : '';
-
-
-
-
-
 
     const renderNextDayForecast = () => {
         const dayForecasts = forecast.slice(selectedForecastDay * 8, (selectedForecastDay + 1) * 8);
@@ -307,24 +298,23 @@ const Weather = () => {
                     <Card.Text>Sunrise: {convertToLocalTime(weather.sys.sunrise, weather.timezone, is24HourFormat)}</Card.Text>
                     <Card.Text>Sunset: {convertToLocalTime(weather.sys.sunset, weather.timezone, is24HourFormat)}</Card.Text>
 
-                        <div className="d-flex justify-content-between">
-                            <Card.Text>
-                                Local Time: {convertToLocalTime(new Date().getTime() / 1000, weather.timezone, is24HourFormat)}
-                            </Card.Text>
-                            <Form.Check
-                                type="switch"
-                                id="time-format-switch"
-                                label={is24HourFormat ? "24h" : "12h"}
-                                onChange={toggleTimeFormat}
-                                checked={!is24HourFormat}
-                                className="custom-switch-size"
-                            />
+                    <Card.Text className="d-flex justify-content-center align-items-center">
+    <span className="mr-3" style={{ width: '50%', textAlign: 'right' }}>
+        Local Time: {convertToLocalTime(new Date().getTime() / 1000, weather.timezone, is24HourFormat)}
+    </span>
+                        <div style={{ display: 'flex', alignItems: 'center', width: '50%' }}>
+                            <Form>
+                                <Form.Check
+                                    type="switch"
+                                    id="time-format-switch"
+                                    label={<span className="font-weight-bold">24h / 12h</span>}
+                                    onChange={toggleTimeFormat}
+                                    checked={!is24HourFormat}
+                                    style={{ fontSize: '1.0rem', margin: '0 1rem' }}
+                                />
+                            </Form>
                         </div>
-
-
-
-
-
+                    </Card.Text>
 
                         {airPollution && (
                             <Card className="mb-4 text-center mt-3">

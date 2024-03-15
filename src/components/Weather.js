@@ -199,10 +199,21 @@ const Weather = () => {
 
 
     const renderNextDayForecast = () => {
-        const dayForecasts = forecast.slice(selectedForecastDay * 8, (selectedForecastDay + 1) * 8);
-        if (dayForecasts.length === 0) return <div>No forecast data available.</div>;
+        const startOfDay = new Date();
+        startOfDay.setUTCDate(startOfDay.getUTCDate() + selectedForecastDay);
+        startOfDay.setUTCHours(0, 0, 0, 0);
 
-        return dayForecasts.map((forecastItem, index) => (
+        const endOfDay = new Date(startOfDay);
+        endOfDay.setUTCHours(21, 0, 0, 0); // Considering forecasts up to 21:00
+
+        const filteredForecasts = forecast.filter(forecastItem => {
+            const forecastDate = new Date(forecastItem.dt * 1000);
+            return forecastDate >= startOfDay && forecastDate <= endOfDay;
+        });
+
+        if (filteredForecasts.length === 0) return <div>No forecast data available.</div>;
+
+        return filteredForecasts.map((forecastItem, index) => (
             <Card key={index} className="mb-3 mt-3">
                 <Card.Header>
                     {convertToLocalTime(forecastItem.dt, weather.timezone, is24HourFormat)}

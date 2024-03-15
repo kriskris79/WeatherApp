@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import { Container, Card, Button, Form, ProgressBar } from 'react-bootstrap';
+import { Container, Card, Button, Form, ProgressBar  } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
 
 function getCurrentFormattedDate(offset = 0) {
@@ -93,7 +93,7 @@ const Weather = () => {
     const [loading, setLoading] = useState(false);
     const [tempUnit, setTempUnit] = useState('metric');
     const [showExplanation, setShowExplanation] = useState(false);
-
+    const [is24HourFormat, setIs24HourFormat] = useState(true);
 
 
 
@@ -170,12 +170,20 @@ const Weather = () => {
 
     const windSpeedInKmh = weather ? (weather.wind.speed * 3.6).toFixed(2) : 0;
 
+
+
     //convert UTC time to local time
-    const convertToLocalTime = (utcSeconds, timezoneOffset) => {
-        const utcDate = new Date(utcSeconds * 1000);
-        const localDate = new Date(utcDate.getTime() + timezoneOffset * 1000);
-        return localDate.toLocaleTimeString();
+    const convertToLocalTime = (utcSeconds, timezoneOffset, is24Hour = true) => {
+        const date = new Date(utcSeconds * 1000 + timezoneOffset * 1000);
+        const options = {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: !is24Hour
+        };
+        return date.toLocaleTimeString([], options);
     };
+
+    const toggleTimeFormat = () => setIs24HourFormat(!is24HourFormat);
 
     const handlePreviousDay = () => {
         setSelectedForecastDay(prevDay => Math.max(prevDay - 1, 0));
@@ -197,14 +205,17 @@ const Weather = () => {
 
 
 
+
+
     const renderNextDayForecast = () => {
         const dayForecasts = forecast.slice(selectedForecastDay * 8, (selectedForecastDay + 1) * 8);
         if (dayForecasts.length === 0) return <div>No forecast data available.</div>;
 
         return dayForecasts.map((forecastItem, index) => (
-
             <Card key={index} className="mb-3 mt-3">
-                <Card.Header>{new Date(forecastItem.dt_txt).toLocaleTimeString()}</Card.Header>
+                <Card.Header>
+                    {convertToLocalTime(forecastItem.dt, weather.timezone, is24HourFormat)}
+                </Card.Header>
 
                 <div>
                     <strong>Temperature:</strong>
@@ -293,9 +304,28 @@ const Weather = () => {
                         </Card.Text>
                         <Card.Text>Pressure: {weather.main.pressure} hPa</Card.Text>
                         <Card.Text>Humidity: {weather.main.humidity}%</Card.Text>
-                        <Card.Text>Sunrise: {sunriseTime}</Card.Text>
-                        <Card.Text>Sunset: {sunsetTime}</Card.Text>
-                        <Card.Text>Local Time: {localTime}</Card.Text>
+                    <Card.Text>Sunrise: {convertToLocalTime(weather.sys.sunrise, weather.timezone, is24HourFormat)}</Card.Text>
+                    <Card.Text>Sunset: {convertToLocalTime(weather.sys.sunset, weather.timezone, is24HourFormat)}</Card.Text>
+
+                        <div className="d-flex justify-content-between">
+                            <Card.Text>
+                                Local Time: {convertToLocalTime(new Date().getTime() / 1000, weather.timezone, is24HourFormat)}
+                            </Card.Text>
+                            <Form.Check
+                                type="switch"
+                                id="time-format-switch"
+                                label={is24HourFormat ? "24h" : "12h"}
+                                onChange={toggleTimeFormat}
+                                checked={!is24HourFormat}
+                                className="custom-switch-size"
+                            />
+                        </div>
+
+
+
+
+
+
                         {airPollution && (
                             <Card className="mb-4 text-center mt-3">
                                 <Card.Header className="mb-3" as="h5">Air Quality Index (AQI)</Card.Header>
@@ -358,6 +388,7 @@ const Weather = () => {
             )}
         </Container>
     );
+
 };
 
 export default Weather;

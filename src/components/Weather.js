@@ -298,11 +298,9 @@ const Weather = () => {
                     <Card.Text>Sunrise: {convertToLocalTime(weather.sys.sunrise, weather.timezone, is24HourFormat)}</Card.Text>
                     <Card.Text>Sunset: {convertToLocalTime(weather.sys.sunset, weather.timezone, is24HourFormat)}</Card.Text>
 
-                    <Card.Text className="d-flex justify-content-center align-items-center">
-    <span className="mr-3" style={{ width: '50%', textAlign: 'right' }}>
-        Local Time: {convertToLocalTime(new Date().getTime() / 1000, weather.timezone, is24HourFormat)}
-    </span>
-                        <div style={{ display: 'flex', alignItems: 'center', width: '50%' }}>
+                    <Card.Text className="weather-card-text">
+                        <span>Local Time: {convertToLocalTime(new Date().getTime() / 1000, weather.timezone, is24HourFormat)}</span>
+                        <div className="time-format-switch-container">
                             <Form>
                                 <Form.Check
                                     type="switch"
@@ -310,7 +308,6 @@ const Weather = () => {
                                     label={<span className="font-weight-bold">24h / 12h</span>}
                                     onChange={toggleTimeFormat}
                                     checked={!is24HourFormat}
-                                    style={{ fontSize: '1.0rem', margin: '0 1rem' }}
                                 />
                             </Form>
                         </div>

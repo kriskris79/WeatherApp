@@ -27,6 +27,40 @@
   color: red;
 }
 
+// WeatherCard
+.weather-card-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & > span {
+    width: 50%;
+    text-align: right;
+
+
+  }
+
+  .time-format-switch-container {
+    display: flex;
+    align-items: center;
+    width: 50%;
+
+
+    .form-check {
+      margin-left:  1rem; // Adjust the margins as needed
+      font-size: 1.0rem;
+      display: flex;
+      align-items: center;
+
+      .font-weight-bold {
+        margin-left: 1rem;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+
 
 
 

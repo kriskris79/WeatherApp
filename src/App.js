@@ -7,6 +7,7 @@ import "./scss/styles/_main.scss";
 const App = () => {
     const [isVerified, setIsVerified] = useState(false);
 
+
     const onCaptchaChange = (value) => {
         console.log("Captcha value:", value);
         if (value) {

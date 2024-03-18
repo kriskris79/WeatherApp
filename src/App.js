@@ -1,35 +1,39 @@
-import React, { useState } from 'react';
-import ReCAPTCHA from 'react-google-recaptcha';
+import React, { useState, useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './config/Firebase';
 import Weather from './components/Weather';
+import ErrorBoundary from './components/ErrorBoundary';
 import 'bootstrap/dist/css/bootstrap.css';
 import "./scss/styles/_main.scss";
 
 const App = () => {
-    const [isVerified, setIsVerified] = useState(false);
+    const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true); // Assume loading until auth state is determined
 
-    const onCaptchaChange = (value) => {
-        console.log("Captcha value:", value);
-        if (value) {
-            setIsVerified(true);
-        }
-    };
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setIsLoading(false); // Once auth state is determined, stop loading
+            setIsUserAuthenticated(!!user); // Update authentication state
+        });
+        return () => unsubscribe(); // Unsubscribe from auth state changes on component unmount
+    }, []);
 
     return (
         <div className="App">
-            {!isVerified ? (
-                <div className="captcha-container">
-                    <ReCAPTCHA
-                        sitekey={process.env.REACT_APP_GOOGLE_RECAPTCHA_SITE_KEY}
-                        onChange={onCaptchaChange}
-                    />
-                </div>
-            ) : (
-                <div>
+            <ErrorBoundary>
+                {isLoading ? (
+                    <div>Loading...</div>
+                ) : !isUserAuthenticated ? (
+                    // Redirect to login or show authentication UI
+                    <div>Authentication Required</div>
+                ) : (
+                    // User authenticated, show main content (Weather component)
                     <Weather />
-                </div>
-            )}
+                )}
+            </ErrorBoundary>
         </div>
     );
 };
 
 export default App;
+

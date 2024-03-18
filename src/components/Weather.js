@@ -211,7 +211,7 @@ const Weather = () => {
             return forecastDate >= startOfDay && forecastDate <= endOfDay;
         });
 
-        if (filteredForecasts.length === 0) return <div>No forecast data available.</div>;
+        if (filteredForecasts.length === 0) return <div>No forecast data available for today as it's nearly the end of the day.</div>;
 
         return filteredForecasts.map((forecastItem, index) => (
             <Card key={index} className="mb-3 mt-3">

@@ -174,7 +174,7 @@ const Weather = () => {
 
     //convert UTC time to local time
     const convertToLocalTime = (utcSeconds, timezoneOffset, is24Hour = true) => {
-        const date = new Date(utcSeconds * 1000 + timezoneOffset * 1000);
+        const date = new Date((utcSeconds + timezoneOffset) * 1000);
         const options = {
             hour: '2-digit',
             minute: '2-digit',

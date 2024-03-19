@@ -1,6 +1,8 @@
-import React, { useState} from 'react';
+// import React, { useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import { Container, Card, Button, Form, ProgressBar  } from 'react-bootstrap';
 import windArrow from '../assets/wind_arrow.svg';
+
 
 function getCurrentFormattedDate(offset = 0) {
     const now = new Date();
@@ -84,6 +86,8 @@ const convertToKelvin = (celsiusTemp) => {
     return (celsiusTemp + 273.15).toFixed(2);
 };
 
+// /* global google */
+
 const Weather = () => {
     const [weather, setWeather] = useState(null);
     const [location, setLocation] = useState('');
@@ -95,7 +99,30 @@ const Weather = () => {
     const [showExplanation, setShowExplanation] = useState(false);
     const [is24HourFormat, setIs24HourFormat] = useState(true);
 
-
+// //google translate
+//
+//
+//     useEffect(() => {
+//         window.googleTranslateElementInit = function() {
+//             if (window.google && window.google.translate) {
+//                 new window.google.translate.TranslateElement({
+//                     pageLanguage: 'en',
+//                     layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
+//                 }, 'google_translate_element');
+//             }
+//         };
+//         const googleTranslateScript = document.createElement('script');
+//         googleTranslateScript.type = 'text/javascript';
+//         googleTranslateScript.async = true;
+//         googleTranslateScript.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+//         document.body.appendChild(googleTranslateScript);
+//
+//
+//         return () => {
+//             // Remove the script on component unmount
+//             document.body.removeChild(googleTranslateScript);
+//         };
+//     }, []);
 
     const toggleTempUnit = () => {
         setTempUnit(tempUnit === 'metric' ? 'standard' : 'metric');
@@ -243,6 +270,8 @@ const Weather = () => {
 
     return (
         <Container className="my-4 ">
+            {/*<div className="translate-and-card-container">*/}
+            {/*    <div id="google_translate_element" className="translate-widget"></div>*/}
             <Card className="text-center ">
 
                     <Card.Title className="text-center mt-3 mb-3">Your World Weather: Current Conditions/Forecast + Air Quality Tracker</Card.Title>
@@ -384,6 +413,7 @@ const Weather = () => {
 
                 </Card>
             )}
+            {/*</div>*/}
         </Container>
     );
 

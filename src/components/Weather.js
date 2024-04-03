@@ -172,16 +172,30 @@ const Weather = () => {
 
 
 
-    //convert UTC time to local time
+    //convert UTC time to local time for summer
     const convertToLocalTime = (utcSeconds, timezoneOffset, is24Hour = true) => {
-        const date = new Date((utcSeconds + timezoneOffset) * 1000);
+        // Subtract one hour  from the provided timezone offset
+        const adjustedTimezoneOffset = timezoneOffset - 3600;
+        const date = new Date((utcSeconds + adjustedTimezoneOffset) * 1000);
         const options = {
             hour: '2-digit',
             minute: '2-digit',
-            hour12: !is24Hour
+            hour12: !is24Hour,
         };
+
         return date.toLocaleTimeString([], options);
     };
+
+    //convert UTC time to local time for winter
+    // const convertToLocalTime = (utcSeconds, timezoneOffset, is24Hour = true) => {
+    //     const date = new Date((utcSeconds + timezoneOffset) * 1000);
+    //     const options = {
+    //         hour: '2-digit',
+    //         minute: '2-digit',
+    //         hour12: !is24Hour
+    //     };
+    //     return date.toLocaleTimeString([], options);
+    // };
 
     const toggleTimeFormat = () => setIs24HourFormat(!is24HourFormat);
 
